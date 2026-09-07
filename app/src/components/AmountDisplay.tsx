@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
+import { useTheme } from '@/data/theme';
 import { Card } from './Card';
-import { colors } from '@/theme';
 import { Text } from './Text';
 
 export type AmountDisplayProps = {
@@ -13,7 +13,10 @@ export type AmountDisplayProps = {
 };
 
 export function AmountDisplay({ label, value, onChangeText, tone }: AmountDisplayProps) {
+  const { colors, scheme } = useTheme();
   const tint = tone === 'income' ? colors.green : colors.rust;
+  const placeholder =
+    scheme === 'dark' ? colors.textFaint : tone === 'income' ? '#7FBBA5' : '#DDB0A2';
 
   return (
     <Card padding={22} style={styles.card}>
@@ -29,7 +32,7 @@ export function AmountDisplay({ label, value, onChangeText, tone }: AmountDispla
           onChangeText={onChangeText}
           keyboardType="decimal-pad"
           placeholder="0,00"
-          placeholderTextColor={tone === 'income' ? '#7FBBA5' : '#DDB0A2'}
+          placeholderTextColor={placeholder}
           selectionColor={tint}
           style={[styles.input, { color: tint }]}
         />

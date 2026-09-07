@@ -1,0 +1,139 @@
+// Cofrinanças — schema único consumido pelo painel-admin (API) e pelo app Expo.
+// Nomes de campo espelham `app/src/data/types.ts` e `painel-admin/src/lib/types.ts`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// Mesmos valores literais usados no frontend ('expense' | 'income').
+enum TxKind {
+  expense
+  income
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  initials     String   @default("")
+  city         String   @default("")
+  plan         String   @default("Gratuito") // "Gratuito" | "Pro"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions Transaction[]
+  goals        Goal[]
+  categories   Category[]
+  recurring    RecurringRule[]
+  preferences  Preferences?
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  kind      TxKind
+  icon      String   @default("film")
+  color     String   @default("#0F7A56")
+  tint      String   @default("#E4F1EB")
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Transaction {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  amount       Decimal  @db.Decimal(12, 2) // sempre positivo; o sinal vem de `kind`
+  kind         TxKind
+  categoryName String
+  date         DateTime @db.Date
+  recurring    Boolean  @default(false)
+  account      String?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, date])
+}
+
+model Goal {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String
+  type            String // "Poupança com prazo" | "Redução de gasto" | "Limite de gasto" | "Limite por categoria"
+  current         Decimal  @db.Decimal(12, 2) @default(0)
+  target          Decimal  @db.Decimal(12, 2) @default(0)
+  color           String   @default("#0F7A56")
+  pct             Int? // override explícito de progresso (0..100)
+  deadlineLabel   String?
+  rightLabel      String?
+  done            Boolean  @default(false)
+  doneLabel       String?
+  categoryName    String?
+  projection      String?  @db.Text
+  projectionTitle String?
+  monthly         Decimal? @db.Decimal(12, 2)
+  termLabel       String?
+  createdAt       DateTime @default(now())
+
+  entries GoalEntry[]
+
+  @@index([userId])
+}
+
+model GoalEntry {
+  id        String   @id @default(cuid())
+  goalId    String
+  goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  title     String
+  meta      String
+  amount    Decimal  @db.Decimal(12, 2) // com sinal
+  createdAt DateTime @default(now())
+
+  @@index([goalId])
+}
+
+model RecurringRule {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  kind         TxKind
+  amount       Decimal   @db.Decimal(12, 2)
+  frequency    String    @default("Mensal") // "Mensal" | "Semanal" | "Quinzenal" | "Anual"
+  sub          String    @default("")
+  categoryName String
+  active       Boolean   @default(true)
+  nextDate     DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model Preferences {
+  userId        String  @id
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dueBill       Boolean @default(true)
+  goalLimit80   Boolean @default(true)
+  weeklyDigest  Boolean @default(false)
+  chartStyle    String  @default("donut") // "donut" | "bars"
+  balanceHidden Boolean @default(false)
+  showTags      Boolean @default(true)
+}

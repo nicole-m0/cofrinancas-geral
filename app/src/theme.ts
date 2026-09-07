@@ -1,9 +1,13 @@
 /**
- * Design tokens for the "Saldo" app.
+ * Design tokens for the Cofrinanças app.
  * Ported from the Claude Design project "Finanças Pessoais - App".
+ *
+ * `lightColors` / `darkColors` share the exact same keys. Components read the
+ * active palette through `useTheme()` (see `src/data/theme.tsx`); `colors` below
+ * is the light palette kept as a default/fallback for theme-agnostic surfaces.
  */
 
-export const colors = {
+export const lightColors = {
   // Surfaces
   canvas: '#E9E7E2',
   screen: '#FBFAF9',
@@ -48,7 +52,53 @@ export const colors = {
   black: '#101413',
 } as const;
 
-/** Category palette — name -> { color, tint } */
+export type ThemeColors = { -readonly [K in keyof typeof lightColors]: string };
+
+export const darkColors: ThemeColors = {
+  canvas: '#121110',
+  screen: '#171613',
+  card: '#201F1B',
+  surfaceMuted: '#262521',
+  surfaceSunken: '#1E1D1A',
+  surfaceRaised: '#2A2925',
+
+  ring: '#323029',
+  ringSoft: '#2C2A24',
+  ringStrong: '#3A382F',
+  divider: '#29271F',
+
+  ink: '#F2F0EA',
+  inkSoft: '#C9CCC5',
+  textSecondary: '#A6AAA3',
+  textMuted: '#9AA09B',
+  textFaint: '#6E726B',
+
+  green: '#2FBE86',
+  greenDark: '#7FE0B8',
+  greenBright: '#3FD097',
+  greenLight: '#6FD3A6',
+  greenTint: '#16352A',
+  greenTintBorder: '#245C46',
+  greenInk: '#9FE3C6',
+
+  rust: '#E5714B',
+  rustBright: '#EE8560',
+  rustSoft: '#F2A48A',
+  rustTint: '#3A211A',
+
+  toggleOn: '#2FBE86',
+  toggleOff: '#3A382F',
+
+  white: '#FFFFFF',
+  black: '#101413',
+};
+
+/** Light palette — default/fallback for theme-agnostic surfaces (e.g. BalanceCard). */
+export const colors = lightColors;
+
+export const palettes = { light: lightColors as unknown as ThemeColors, dark: darkColors };
+
+/** Category palette — name -> { color, tint } (theme-agnostic; saturated). */
 export const categoryColors: Record<string, { color: string; tint: string }> = {
   Moradia: { color: '#3E5C76', tint: '#ECF0F4' },
   Mercado: { color: '#0F7A56', tint: '#E4F1EB' },

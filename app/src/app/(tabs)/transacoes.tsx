@@ -5,13 +5,15 @@ import { Card, FilterPill, IconTile, Screen, SheetModal, Text, Toggle } from '@/
 import { Icon, type IconName } from '@/icons';
 import { useFinance } from '@/data/store';
 import { brl } from '@/format';
-import { colors } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import type { Transaction } from '@/data/types';
 
 const FILTERS = ['Tudo', 'Despesas', 'Receitas', 'Recorrentes'] as const;
 type Filter = (typeof FILTERS)[number];
 
 export default function TransacoesScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { groupedTransactions, categories, showTags, setShowTags } = useFinance();
   const [filter, setFilter] = useState<Filter>('Tudo');
   const [sheet, setSheet] = useState(false);
@@ -146,7 +148,8 @@ export default function TransacoesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   titleRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 4 },
   title: { fontSize: 26, letterSpacing: -0.6 },
   sub: { fontSize: 13, marginTop: 2 },

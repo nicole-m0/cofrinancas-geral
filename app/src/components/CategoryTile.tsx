@@ -1,7 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors, radius } from '@/theme';
+import { radius } from '@/theme';
+import { useTheme } from '@/data/theme';
 import { Icon, type IconName } from '@/icons';
 import { Text } from './Text';
 
@@ -14,7 +15,8 @@ export type CategoryTileProps = {
   onPress?: () => void;
 };
 
-export function CategoryTile({ name, icon, color, tint, selected = false, onPress }: CategoryTileProps) {
+export function CategoryTile({ name, icon, color, selected = false, onPress }: CategoryTileProps) {
+  const { colors } = useTheme();
   return (
     <Pressable
       onPress={onPress}

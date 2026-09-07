@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,13 +6,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Card, IconTile, RingProgress, SheetModal, StatTile, Text } from '@/components';
 import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { goalAcceptsContribution, goalPct } from '@/data/goals';
 import { brl, brlShort, parseAmount } from '@/format';
-import { colors } from '@/theme';
 
 export default function MetaDetalheScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { getGoal, contributeToGoal } = useFinance();
 
   const goal = getGoal(id);
@@ -210,19 +212,20 @@ export default function MetaDetalheScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.screen },
   scroll: { paddingBottom: 20 },
   notFound: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
 
-  headerDark: { backgroundColor: colors.ink, paddingHorizontal: 20, paddingBottom: 26, borderBottomLeftRadius: 30, borderBottomRightRadius: 30 },
+  headerDark: { backgroundColor: colors.black, paddingHorizontal: 20, paddingBottom: 26, borderBottomLeftRadius: 30, borderBottomRightRadius: 30 },
   headerActions: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 6 },
   headerChip: { width: 38, height: 38, borderRadius: 13, backgroundColor: 'rgba(255,255,255,0.12)', alignItems: 'center', justifyContent: 'center' },
   typeTag: { alignSelf: 'flex-start', marginTop: 18, backgroundColor: 'rgba(255,255,255,0.14)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
   typeTagText: { fontSize: 11, letterSpacing: 0.4 },
   title: { fontSize: 26, letterSpacing: -0.6, marginTop: 10 },
   gaugeRow: { flexDirection: 'row', alignItems: 'center', gap: 22, marginTop: 20 },
-  gaugeInner: { width: 84, height: 84, borderRadius: 42, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' },
+  gaugeInner: { width: 84, height: 84, borderRadius: 42, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center' },
   gaugePct: { fontSize: 24, letterSpacing: -0.5 },
   flex: { flex: 1, minWidth: 0 },
   savedLabel: { fontSize: 12, letterSpacing: 0.8 },

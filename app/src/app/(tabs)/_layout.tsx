@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Tabs } from 'expo-router/js-tabs';
 import { useRouter } from 'expo-router';
@@ -8,10 +8,12 @@ import { SheetModal } from '@/components/SheetModal';
 import { Text } from '@/components/Text';
 import { IconTile } from '@/components/IconTile';
 import { Icon } from '@/icons';
-import { colors } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
 
 export default function TabsLayout() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const go = (path: '/nova-despesa' | '/nova-receita') => {
@@ -61,7 +63,8 @@ export default function TabsLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   action: {
     flexDirection: 'row',
     alignItems: 'center',

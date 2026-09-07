@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppHeader, Card, MiniBarChart, ProgressBar, Screen, SegmentedControl, StatTile, Text } from '@/components';
 import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
-import { months, reportStats } from '@/data/mock';
+import { useTheme, type ThemeColors } from '@/data/theme';
+import { reportStats } from '@/data/mock';
 import { brlShort } from '@/format';
-import { colors } from '@/theme';
 
 const PERIODS = ['3 meses', '6 meses', 'Ano', 'Custom'] as const;
 type Period = (typeof PERIODS)[number];
 
 export default function RelatoriosScreen() {
-  const { categorySpend } = useFinance();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const { categorySpend, months } = useFinance();
   const [period, setPeriod] = useState<Period>('6 meses');
 
   const data = period === '3 meses' ? months.slice(-3) : months;
@@ -111,7 +113,8 @@ export default function RelatoriosScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   intro: { gap: 2 },
   title: { fontSize: 26, letterSpacing: -0.6 },
   sub: { fontSize: 13 },

@@ -57,7 +57,7 @@ export const APP_TODAY = '2026-09-05';
 
 /** "Hoje · 5 set" / "Ontem · 4 set" / "2 set" */
 export function groupLabel(iso: string): string {
-  const [y, m, d] = iso.split('-').map(Number);
+  const [, m, d] = iso.split('-').map(Number);
   const short = `${d} ${MONTHS_PT[m - 1]}`;
   if (iso === APP_TODAY) return `Hoje · ${short}`;
   const yesterday = shiftIso(APP_TODAY, -1);

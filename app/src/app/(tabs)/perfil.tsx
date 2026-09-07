@@ -1,12 +1,13 @@
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
-import { Card, Screen, Text, Toggle } from '@/components';
+import { Card, Screen, SegmentedControl, Text, Toggle } from '@/components';
 import { Icon } from '@/icons';
+import { useAuth } from '@/data/auth';
 import { useFinance } from '@/data/store';
-import { profile } from '@/data/mock';
+import { useTheme, type ThemePreference, type ThemeColors } from '@/data/theme';
 import { brl } from '@/format';
-import { colors } from '@/theme';
 import type { NotificationPrefs } from '@/data/types';
 
 const NOTIF_ROWS: { key: keyof NotificationPrefs; title: string; sub: string }[] = [
@@ -15,9 +16,24 @@ const NOTIF_ROWS: { key: keyof NotificationPrefs; title: string; sub: string }[]
   { key: 'weeklyDigest', title: 'Resumo semanal', sub: 'Domingo, 20h' },
 ];
 
+const THEME_OPTIONS = ['Claro', 'Escuro', 'Sistema'] as const;
+const PREF_TO_LABEL: Record<ThemePreference, (typeof THEME_OPTIONS)[number]> = {
+  light: 'Claro',
+  dark: 'Escuro',
+  system: 'Sistema',
+};
+const LABEL_TO_PREF: Record<(typeof THEME_OPTIONS)[number], ThemePreference> = {
+  Claro: 'light',
+  Escuro: 'dark',
+  Sistema: 'system',
+};
+
 export default function PerfilScreen() {
   const router = useRouter();
-  const { notifications, toggleNotification, recurring, toggleRecurring } = useFinance();
+  const { signOut } = useAuth();
+  const { colors, preference, setPreference } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const { profile, notifications, toggleNotification, recurring, toggleRecurring } = useFinance();
 
   return (
     <Screen withTabBar>
@@ -27,7 +43,7 @@ export default function PerfilScreen() {
 
       <Card style={styles.userCard}>
         <View style={styles.avatar}>
-          <Text weight="extrabold" color={colors.white} style={styles.avatarText}>
+          <Text weight="extrabold" color={colors.screen} style={styles.avatarText}>
             {profile.initials}
           </Text>
         </View>
@@ -61,6 +77,22 @@ export default function PerfilScreen() {
             </View>
           ))}
         </View>
+      </Card>
+
+      <Card>
+        <Text weight="extrabold" color={colors.textMuted} style={styles.cardLabel}>
+          APARÊNCIA
+        </Text>
+        <View style={styles.appearanceRow}>
+          <SegmentedControl
+            options={THEME_OPTIONS}
+            value={PREF_TO_LABEL[preference]}
+            onChange={(label) => setPreference(LABEL_TO_PREF[label])}
+          />
+        </View>
+        <Text weight="medium" color={colors.textFaint} style={styles.appearanceHint}>
+          &ldquo;Sistema&rdquo; segue o tema do seu aparelho.
+        </Text>
       </Card>
 
       <Card>
@@ -121,9 +153,7 @@ export default function PerfilScreen() {
         </View>
       </Card>
 
-      <Pressable
-        onPress={() => Alert.alert('Sair da conta', 'Isto encerraria a sessão (protótipo).')}
-        hitSlop={8}>
+      <Pressable onPress={() => void signOut()} hitSlop={8}>
         <Text weight="bold" color={colors.rust} style={styles.logout}>
           Sair da conta
         </Text>
@@ -132,7 +162,8 @@ export default function PerfilScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   title: { fontSize: 26, letterSpacing: -0.6, marginTop: 4 },
 
   userCard: { flexDirection: 'row', alignItems: 'center', gap: 14 },
@@ -148,6 +179,9 @@ const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
   name: { fontSize: 17, letterSpacing: -0.2 },
   email: { fontSize: 12.5, marginTop: 2 },
+
+  appearanceRow: { marginTop: 14 },
+  appearanceHint: { fontSize: 11.5, marginTop: 10 },
 
   cardLabel: { fontSize: 12, letterSpacing: 0.8 },
   cardHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

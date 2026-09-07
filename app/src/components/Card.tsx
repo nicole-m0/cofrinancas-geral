@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, type ViewProps, type ViewStyle } from 'react-native';
 
-import { colors, radius } from '@/theme';
+import { radius } from '@/theme';
+import { useTheme } from '@/data/theme';
 
 export type CardProps = ViewProps & {
   padding?: number;
@@ -14,18 +15,24 @@ export type CardProps = ViewProps & {
 export function Card({
   padding = 18,
   radius: r = radius.lg,
-  ring = colors.ring,
-  background = colors.card,
+  ring,
+  background,
   style,
   children,
   ...rest
 }: CardProps) {
+  const { colors } = useTheme();
   return (
     <View
       {...rest}
       style={[
         styles.base,
-        { padding, borderRadius: r, backgroundColor: background, borderColor: ring },
+        {
+          padding,
+          borderRadius: r,
+          backgroundColor: background ?? colors.card,
+          borderColor: ring ?? colors.ring,
+        },
         style,
       ]}>
       {children}

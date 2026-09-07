@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors, radius } from '@/theme';
+import { radius } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { Text } from './Text';
 
 export type SegmentedControlProps<T extends string> = {
@@ -15,6 +16,9 @@ export function SegmentedControl<T extends string>({
   value,
   onChange,
 }: SegmentedControlProps<T>) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   return (
     <View style={styles.track}>
       {options.map((opt) => {
@@ -37,26 +41,27 @@ export function SegmentedControl<T extends string>({
   );
 }
 
-const styles = StyleSheet.create({
-  track: {
-    flexDirection: 'row',
-    padding: 4,
-    backgroundColor: colors.surfaceMuted,
-    borderRadius: radius.sm,
-  },
-  segment: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 12,
-  },
-  segmentActive: {
-    backgroundColor: colors.card,
-    shadowColor: '#101413',
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
-  },
-  label: { fontSize: 13 },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    track: {
+      flexDirection: 'row',
+      padding: 4,
+      backgroundColor: colors.surfaceMuted,
+      borderRadius: radius.sm,
+    },
+    segment: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: 10,
+      borderRadius: 12,
+    },
+    segmentActive: {
+      backgroundColor: colors.card,
+      shadowColor: '#101413',
+      shadowOpacity: 0.08,
+      shadowRadius: 2,
+      shadowOffset: { width: 0, height: 1 },
+      elevation: 1,
+    },
+    label: { fontSize: 13 },
+  });

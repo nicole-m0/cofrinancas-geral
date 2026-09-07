@@ -20,9 +20,9 @@ import { CategoryPickerSheet } from '@/components/CategoryPickerSheet';
 import { SheetModal } from '@/components/SheetModal';
 import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { formDefaults } from '@/data/mock';
 import { APP_TODAY, amount2, longDate, parseAmount } from '@/format';
-import { colors } from '@/theme';
 import type { Frequency } from '@/data/types';
 
 const FREQUENCIES: Frequency[] = ['Mensal', 'Semanal', 'Quinzenal', 'Anual'];
@@ -34,6 +34,8 @@ const DATE_OPTIONS = [
 
 export default function NovaReceitaScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { categories, addIncome } = useFinance();
 
   const [mode, setMode] = useState<'Avulsa' | 'Recorrente'>('Recorrente');
@@ -123,7 +125,7 @@ export default function NovaReceitaScreen() {
                     ]}>
                     <Text
                       weight={active ? 'extrabold' : 'bold'}
-                      color={active ? colors.white : colors.textSecondary}
+                      color={active ? colors.screen : colors.textSecondary}
                       style={styles.freqText}>
                       {f}
                     </Text>
@@ -205,7 +207,8 @@ export default function NovaReceitaScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   grid: { flexDirection: 'row', gap: 10 },
   seeAll: { fontSize: 12, marginTop: 10 },
   recCard: { gap: 16 },

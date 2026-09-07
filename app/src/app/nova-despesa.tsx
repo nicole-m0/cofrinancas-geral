@@ -18,9 +18,9 @@ import { CategoryPickerSheet } from '@/components/CategoryPickerSheet';
 import { SheetModal } from '@/components/SheetModal';
 import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { formDefaults } from '@/data/mock';
 import { APP_TODAY, amount2, longDate, parseAmount } from '@/format';
-import { colors } from '@/theme';
 
 const DATE_OPTIONS = [
   { iso: APP_TODAY, label: 'Hoje · 5 set' },
@@ -30,6 +30,8 @@ const DATE_OPTIONS = [
 
 export default function NovaDespesaScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { categories, addExpense } = useFinance();
 
   const [mode, setMode] = useState<'Avulsa' | 'Recorrente'>('Avulsa');
@@ -150,7 +152,8 @@ export default function NovaDespesaScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   grid: { flexDirection: 'row', gap: 10 },
   seeAll: { fontSize: 12, marginTop: 10 },
   account: {

@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 import { Icon, type IconName } from './Icon';
+import { ThemeToggle } from './ThemeToggle';
 
 const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: '/', label: 'Visão geral', icon: 'grid' },
@@ -15,11 +17,11 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: '/relatorios', label: 'Relatórios', icon: 'chart' },
 ];
 
-export function Sidebar() {
+export function Sidebar({ userName, userEmail }: { userName: string; userEmail: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-60 shrink-0 flex-col gap-1 bg-ink px-4 py-6 text-white/70">
+    <aside className="sticky top-0 flex h-dvh w-60 shrink-0 flex-col gap-1 bg-rail px-4 py-6 text-white/70">
       <div className="mb-6 flex items-center gap-2.5 px-2">
         <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand text-sm font-extrabold text-white">
           C
@@ -50,8 +52,19 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto rounded-xl bg-white/5 px-3 py-3 text-[11px] font-semibold leading-relaxed text-white/45">
-        Protótipo · dados em mock. Sem backend, sem banco.
+      <div className="mt-auto flex flex-col gap-2">
+        <ThemeToggle />
+        <div className="rounded-xl bg-white/5 px-3 py-2.5 leading-tight">
+          <div className="truncate text-xs font-bold text-white/90">{userName}</div>
+          <div className="truncate text-[11px] font-medium text-white/45">{userEmail}</div>
+        </div>
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: '/login' })}
+          className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-white/60 hover:bg-white/5 hover:text-white/90">
+          <Icon name="external" size={16} />
+          Sair
+        </button>
       </div>
     </aside>
   );

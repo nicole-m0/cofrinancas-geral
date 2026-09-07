@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
-import { colors } from '@/theme';
+import { useTheme } from '@/data/theme';
 import { Text } from './Text';
 
 export type FilterPillProps = {
@@ -11,6 +11,7 @@ export type FilterPillProps = {
 };
 
 export function FilterPill({ label, active = false, onPress }: FilterPillProps) {
+  const { colors } = useTheme();
   return (
     <Pressable
       onPress={onPress}
@@ -22,7 +23,7 @@ export function FilterPill({ label, active = false, onPress }: FilterPillProps) 
       ]}>
       <Text
         weight={active ? 'extrabold' : 'bold'}
-        color={active ? colors.white : colors.textSecondary}
+        color={active ? colors.screen : colors.textSecondary}
         style={styles.label}>
         {label}
       </Text>

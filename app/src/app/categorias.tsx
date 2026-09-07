@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { Button, Card, IconTile, Screen, SegmentedControl, Text } from '@/components';
 import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
-import { colors, radius, swatches } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
+import { radius, swatches } from '@/theme';
 import type { TxKind } from '@/data/types';
 
 export default function CategoriasScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { categories, addCategory, deleteCategory } = useFinance();
 
   const [tab, setTab] = useState<'Despesas' | 'Receitas'>('Despesas');
@@ -106,7 +109,8 @@ export default function CategoriasScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 },
   backChip: {
     width: 38,

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
-import { colors } from '@/theme';
+import { useTheme } from '@/data/theme';
 
 export type DonutSegment = { pct: number; color: string };
 
@@ -14,18 +14,17 @@ export type DonutChartProps = {
 };
 
 export function DonutChart({ size, strokeWidth, segments, children }: DonutChartProps) {
+  const { colors } = useTheme();
   const r = (size - strokeWidth) / 2;
   const c = 2 * Math.PI * r;
   const total = segments.reduce((s, seg) => s + seg.pct, 0) || 1;
 
-  let acc = 0;
-  const arcs = segments.map((seg, i) => {
-    const frac = seg.pct / total;
-    const dash = c * frac;
+  const arcs = segments.reduce<React.ReactNode[]>((out, seg, i) => {
+    const accBefore = segments.slice(0, i).reduce((s, x) => s + x.pct, 0);
+    const dash = c * (seg.pct / total);
     const gap = c - dash;
-    const rotation = -90 + (acc / total) * 360;
-    acc += seg.pct;
-    return (
+    const rotation = -90 + (accBefore / total) * 360;
+    out.push(
       <Circle
         key={i}
         cx={size / 2}
@@ -36,9 +35,10 @@ export function DonutChart({ size, strokeWidth, segments, children }: DonutChart
         fill="none"
         strokeDasharray={[dash, gap]}
         transform={`rotate(${rotation} ${size / 2} ${size / 2})`}
-      />
+      />,
     );
-  });
+    return out;
+  }, []);
 
   return (
     <View style={{ width: size, height: size }}>

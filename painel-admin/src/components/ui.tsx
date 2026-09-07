@@ -70,7 +70,7 @@ export function Badge({
     neutral: 'bg-sunken text-muted',
     green: 'bg-brand-tint text-brand-dark',
     rust: 'bg-rust-tint text-rust',
-    gold: 'bg-[#F7EFDF] text-gold',
+    gold: 'bg-gold-tint text-gold',
   };
   return (
     <span
@@ -94,7 +94,7 @@ export function ProgressBar({
   const pct = Math.max(0, Math.min(100, value));
   return (
     <div
-      className={`w-full overflow-hidden rounded-full bg-[#F1EFEA] ${className}`}
+      className={`w-full overflow-hidden rounded-full bg-track ${className}`}
       style={{ height }}>
       <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
     </div>
@@ -113,7 +113,7 @@ export function CategoryDot({ name }: { name: string }) {
 export function Avatar({ initials, size = 40 }: { initials: string; size?: number }) {
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-xl bg-ink font-extrabold text-white"
+      className="grid shrink-0 place-items-center rounded-xl bg-inverse font-extrabold text-on-inverse"
       style={{ width: size, height: size, fontSize: size * 0.36 }}>
       {initials}
     </span>

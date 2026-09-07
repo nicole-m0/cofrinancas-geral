@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -8,7 +8,8 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { colors, radius } from '@/theme';
+import { radius } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { Text } from './Text';
 
 export function Field({
@@ -20,6 +21,8 @@ export function Field({
   children: React.ReactNode;
   style?: ViewStyle;
 }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <View style={[styles.field, style]}>
       <Text weight="extrabold" color={colors.textMuted} style={styles.label}>
@@ -30,18 +33,12 @@ export function Field({
   );
 }
 
-export function TextField({
-  label,
-  style,
-  ...props
-}: TextInputProps & { label: string }) {
+export function TextField({ label, style, ...props }: TextInputProps & { label: string }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <Field label={label}>
-      <TextInput
-        {...props}
-        placeholderTextColor={colors.textFaint}
-        style={[styles.input, style]}
-      />
+      <TextInput {...props} placeholderTextColor={colors.textFaint} style={[styles.input, style]} />
     </Field>
   );
 }
@@ -59,6 +56,8 @@ export function SelectField({
   leading?: React.ReactNode;
   placeholder?: string;
 }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <Field label={label}>
       <Pressable onPress={onPress} style={styles.select}>
@@ -74,30 +73,31 @@ export function SelectField({
   );
 }
 
-const styles = StyleSheet.create({
-  field: { gap: 7 },
-  label: { fontSize: 12, letterSpacing: 0.6, textTransform: 'uppercase' },
-  input: {
-    backgroundColor: colors.card,
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: colors.ring,
-    paddingHorizontal: 16,
-    paddingVertical: 15,
-    fontSize: 15,
-    fontFamily: 'Manrope_600SemiBold',
-    color: colors.ink,
-  },
-  select: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    backgroundColor: colors.card,
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: colors.ring,
-    paddingHorizontal: 16,
-    paddingVertical: 15,
-  },
-  selectText: { flex: 1, fontSize: 15 },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    field: { gap: 7 },
+    label: { fontSize: 12, letterSpacing: 0.6, textTransform: 'uppercase' },
+    input: {
+      backgroundColor: colors.card,
+      borderRadius: radius.sm,
+      borderWidth: 1,
+      borderColor: colors.ring,
+      paddingHorizontal: 16,
+      paddingVertical: 15,
+      fontSize: 15,
+      fontFamily: 'Manrope_600SemiBold',
+      color: colors.ink,
+    },
+    select: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      backgroundColor: colors.card,
+      borderRadius: radius.sm,
+      borderWidth: 1,
+      borderColor: colors.ring,
+      paddingHorizontal: 16,
+      paddingVertical: 15,
+    },
+    selectText: { flex: 1, fontSize: 15 },
+  });

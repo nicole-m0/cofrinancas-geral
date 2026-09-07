@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
+/* Ativa `dark:` utilitário via atributo no <html> (toggle manual). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
+  /* Valores = tema CLARO. O tema escuro sobrescreve as mesmas vars abaixo. */
   --color-canvas: #e9e7e2;
   --color-screen: #fbfaf9;
   --color-card: #ffffff;
@@ -14,6 +18,7 @@
   --color-hair: #edebe6;
   --color-hair-soft: #e6e4df;
   --color-sunken: #f4f2ed;
+  --color-track: #f1efea;
 
   --color-brand: #0f7a56;
   --color-brand-dark: #0b5c3f;
@@ -24,13 +29,100 @@
   --color-rust-bright: #e5714b;
   --color-rust-tint: #fbeae4;
   --color-gold: #c08a2f;
+  --color-gold-tint: #f7efdf;
+
+  /* Superfícies que devem contrastar com o fundo (botões, avatar). */
+  --color-inverse: #101413;
+  --color-on-inverse: #ffffff;
+  /* Barra lateral: sempre escura, nos dois temas. */
+  --color-rail: #101413;
 
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ---- Tema ESCURO ---- */
+/* 1) sem escolha explícita + SO escuro  2) escolha explícita `dark` */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-canvas: #14120e;
+    --color-screen: #1a1813;
+    --color-card: #221f18;
+
+    --color-ink: #f3f0e8;
+    --color-ink-soft: #cbc9c0;
+    --color-muted: #9b988f;
+    --color-faint: #7c7a72;
+    --color-ghost: #66645c;
+
+    --color-hair: #322f27;
+    --color-hair-soft: #3a372e;
+    --color-sunken: #1f1c15;
+    --color-track: #322f27;
+
+    --color-brand: #35c98f;
+    --color-brand-dark: #6fe0b3;
+    --color-brand-bright: #4fd7a0;
+    --color-brand-tint: #14352a;
+
+    --color-rust: #e8805c;
+    --color-rust-bright: #ef8a63;
+    --color-rust-tint: #3a2018;
+    --color-gold: #d6a84f;
+    --color-gold-tint: #3a3117;
+
+    --color-inverse: #f3f0e8;
+    --color-on-inverse: #14120e;
+    --color-rail: #0d0c0a;
+  }
+}
+
+[data-theme="dark"] {
+  --color-canvas: #14120e;
+  --color-screen: #1a1813;
+  --color-card: #221f18;
+
+  --color-ink: #f3f0e8;
+  --color-ink-soft: #cbc9c0;
+  --color-muted: #9b988f;
+  --color-faint: #7c7a72;
+  --color-ghost: #66645c;
+
+  --color-hair: #322f27;
+  --color-hair-soft: #3a372e;
+  --color-sunken: #1f1c15;
+  --color-track: #322f27;
+
+  --color-brand: #35c98f;
+  --color-brand-dark: #6fe0b3;
+  --color-brand-bright: #4fd7a0;
+  --color-brand-tint: #14352a;
+
+  --color-rust: #e8805c;
+  --color-rust-bright: #ef8a63;
+  --color-rust-tint: #3a2018;
+  --color-gold: #d6a84f;
+  --color-gold-tint: #3a3117;
+
+  --color-inverse: #f3f0e8;
+  --color-on-inverse: #14120e;
+  --color-rail: #0d0c0a;
 }
 
 html,
 body {
   height: 100%;
+}
+
+:root {
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {

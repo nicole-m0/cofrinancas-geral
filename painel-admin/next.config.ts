@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Mantém Prisma / bcrypt fora do bundle do servidor (usam binários / require dinâmico).
+  serverExternalPackages: ["@prisma/client", ".prisma/client", "bcryptjs"],
 };
 
 export default nextConfig;

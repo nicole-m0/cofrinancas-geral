@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { Icon, type IconName } from '@/icons';
 import { IconTile } from './IconTile';
 import { Text } from './Text';
@@ -24,22 +24,33 @@ export type ListItemProps = {
 
 export function ListItem({
   icon,
-  iconColor = colors.textSecondary,
-  iconTint = colors.surfaceRaised,
+  iconColor,
+  iconTint,
   title,
   subtitle,
   value,
-  valueColor = colors.ink,
+  valueColor,
   trailing,
   chevron,
   onPress,
   divider = false,
   tag,
 }: ListItemProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const Wrapper = onPress ? Pressable : View;
+
   return (
     <Wrapper onPress={onPress} style={[styles.row, divider && styles.divider]}>
-      {icon ? <IconTile icon={icon} color={iconColor} tint={iconTint} size={38} rounded={13} /> : null}
+      {icon ? (
+        <IconTile
+          icon={icon}
+          color={iconColor ?? colors.textSecondary}
+          tint={iconTint ?? colors.surfaceRaised}
+          size={38}
+          rounded={13}
+        />
+      ) : null}
 
       <View style={styles.mid}>
         <Text weight="bold" style={styles.title} numberOfLines={1}>
@@ -64,7 +75,7 @@ export function ListItem({
       </View>
 
       {value ? (
-        <Text weight="extrabold" color={valueColor} style={styles.value}>
+        <Text weight="extrabold" color={valueColor ?? colors.ink} style={styles.value}>
           {value}
         </Text>
       ) : null}
@@ -74,14 +85,15 @@ export function ListItem({
   );
 }
 
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13 },
-  divider: { borderBottomWidth: 1, borderBottomColor: colors.divider },
-  mid: { flex: 1, minWidth: 0 },
-  title: { fontSize: 14 },
-  subRow: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 3 },
-  sub: { fontSize: 12, flexShrink: 1 },
-  value: { fontSize: 14 },
-  tag: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, backgroundColor: colors.greenTint },
-  tagText: { fontSize: 10, letterSpacing: 0.3 },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13 },
+    divider: { borderBottomWidth: 1, borderBottomColor: colors.divider },
+    mid: { flex: 1, minWidth: 0 },
+    title: { fontSize: 14 },
+    subRow: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 3 },
+    sub: { fontSize: 12, flexShrink: 1 },
+    value: { fontSize: 14 },
+    tag: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, backgroundColor: colors.greenTint },
+    tagText: { fontSize: 10, letterSpacing: 0.3 },
+  });

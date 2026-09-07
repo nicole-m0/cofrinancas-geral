@@ -1,8 +1,8 @@
 /**
- * Domain types for Saldo.
+ * Domain types for Cofrinanças.
  *
- * Field names are kept in sync with the admin panel (`painel-admin/src/lib/types.ts`)
- * so swapping the mock module for a real API later is a drop-in change.
+ * Field names are kept in sync with the admin panel (`painel-admin/src/lib/types.ts`),
+ * which serves the API the app consumes.
  */
 import type { IconName } from '@/icons';
 

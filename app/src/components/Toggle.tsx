@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors } from '@/theme';
+import { useTheme } from '@/data/theme';
 
 export type ToggleProps = {
   value: boolean;
@@ -10,10 +10,8 @@ export type ToggleProps = {
 };
 
 export function Toggle({ value, onValueChange, size = 'md' }: ToggleProps) {
-  const dims =
-    size === 'md'
-      ? { w: 48, h: 28, knob: 22 }
-      : { w: 38, h: 22, knob: 17 };
+  const { colors } = useTheme();
+  const dims = size === 'md' ? { w: 48, h: 28, knob: 22 } : { w: 38, h: 22, knob: 17 };
 
   return (
     <Pressable

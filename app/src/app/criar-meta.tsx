@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -6,8 +6,9 @@ import { AppHeader, Button, Card, IconTile, Screen, Text, Toggle } from '@/compo
 import { CategoryPickerSheet } from '@/components/CategoryPickerSheet';
 import { Icon, type IconName } from '@/icons';
 import { useFinance } from '@/data/store';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { parseAmount } from '@/format';
-import { colors, radius } from '@/theme';
+import { radius } from '@/theme';
 import type { GoalType } from '@/data/types';
 
 type Option = {
@@ -28,6 +29,8 @@ const OPTIONS: Option[] = [
 
 export default function CriarMetaScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { addGoal } = useFinance();
 
   const [type, setType] = useState<GoalType>('Limite por categoria');
@@ -70,22 +73,28 @@ export default function CriarMetaScreen() {
                 onPress={() => setType(o.type)}
                 style={[
                   styles.option,
-                  { backgroundColor: active ? colors.ink : colors.card, borderColor: active ? colors.ink : colors.ring },
+                  {
+                    backgroundColor: active ? colors.ink : colors.card,
+                    borderColor: active ? colors.green : colors.ring,
+                  },
                 ]}>
                 <IconTile
                   icon={o.icon}
-                  color={active ? colors.rustSoft : o.color}
+                  color={active ? colors.green : o.color}
                   tint={active ? 'rgba(255,255,255,0.12)' : o.tint}
                   size={36}
                   rounded={12}
                 />
                 <View style={styles.optionText}>
-                  <Text weight={active ? 'extrabold' : 'bold'} color={active ? colors.white : colors.ink} style={styles.optionTitle}>
+                  <Text
+                    weight={active ? 'extrabold' : 'bold'}
+                    color={active ? colors.screen : colors.ink}
+                    style={styles.optionTitle}>
                     {o.title}
                   </Text>
                   <Text
                     weight="medium"
-                    color={active ? 'rgba(255,255,255,0.6)' : colors.textMuted}
+                    color={active ? colors.textFaint : colors.textMuted}
                     style={styles.optionSub}>
                     {o.sub}
                   </Text>
@@ -195,7 +204,8 @@ export default function CriarMetaScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   section: { gap: 10 },
   label: { fontSize: 12, letterSpacing: 0.6 },
   options: { gap: 9 },

@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { useTheme } from '@/data/theme';
 import { Card } from './Card';
-import { colors } from '@/theme';
 import { Icon } from '@/icons';
 import { Text } from './Text';
 
@@ -14,7 +14,10 @@ export type StatTileProps = {
   deltaColor?: string;
 };
 
-export function StatTile({ label, value, delta, deltaDir, deltaColor = colors.green }: StatTileProps) {
+export function StatTile({ label, value, delta, deltaDir, deltaColor }: StatTileProps) {
+  const { colors } = useTheme();
+  const dColor = deltaColor ?? colors.green;
+
   return (
     <Card padding={15} radius={20} style={styles.card}>
       <Text weight="extrabold" color={colors.textMuted} style={styles.label}>
@@ -25,8 +28,8 @@ export function StatTile({ label, value, delta, deltaDir, deltaColor = colors.gr
       </Text>
       {delta ? (
         <View style={styles.deltaRow}>
-          {deltaDir ? <Icon name={deltaDir} size={13} color={deltaColor} /> : null}
-          <Text weight="extrabold" color={deltaColor} style={styles.delta}>
+          {deltaDir ? <Icon name={deltaDir} size={13} color={dColor} /> : null}
+          <Text weight="extrabold" color={dColor} style={styles.delta}>
             {delta}
           </Text>
         </View>

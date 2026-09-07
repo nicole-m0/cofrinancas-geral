@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -6,10 +7,12 @@ import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
 import { goalPct, goalRight, goalTargetLabel } from '@/data/goals';
 import { brlShort } from '@/format';
-import { colors } from '@/theme';
+import { useTheme, type ThemeColors } from '@/data/theme';
 
 export default function MetasScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { goals, goalsDone } = useFinance();
 
   return (
@@ -24,8 +27,8 @@ export default function MetasScreen() {
           </Text>
         </View>
         <Pressable style={styles.newBtn} onPress={() => router.push('/criar-meta')}>
-          <Icon name="plus" size={15} color={colors.white} />
-          <Text weight="extrabold" color={colors.white} style={styles.newBtnText}>
+          <Icon name="plus" size={15} color={colors.screen} />
+          <Text weight="extrabold" color={colors.screen} style={styles.newBtnText}>
             Nova
           </Text>
         </Pressable>
@@ -91,7 +94,8 @@ export default function MetasScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   titleRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 4 },
   title: { fontSize: 26, letterSpacing: -0.6 },
   sub: { fontSize: 13, marginTop: 2 },

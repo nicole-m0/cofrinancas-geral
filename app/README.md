@@ -1,8 +1,9 @@
-# Saldo — app de finanças pessoais
+# Cofrinanças — app de finanças pessoais
 
 Aplicativo mobile em **React Native + Expo** (Expo Router, TypeScript).
-Frontend puro: **sem backend, sem banco** — tudo sai de `src/data/mock.ts` através
-de um store em memória.
+Consome a API servida pelo `painel-admin/` (Next.js Route Handlers); a URL fica
+em `EXPO_PUBLIC_API_URL` (`.env`). Autenticação por token (Bearer) guardado no
+dispositivo. `src/data/mock.ts` só guarda constantes de formulário.
 
 O visual foi importado do Claude Design — projeto _"Finanças Pessoais - App"_,
 10 artboards iOS/Android de 390 px. As cores, tipografia (Manrope), raios e o
@@ -22,7 +23,9 @@ Depois: `i` (iOS), `a` (Android), `w` (web) ou leia o QR code no app Expo Go.
 ```
 src/
 ├── app/                     rotas (Expo Router)
-│   ├── _layout.tsx          Stack raiz · fontes Manrope · FinanceProvider
+│   ├── _layout.tsx          Stack raiz · fontes · AuthProvider · OnboardingProvider · FinanceProvider
+│   ├── onboarding.tsx       telas de primeira abertura (4 passos)
+│   ├── login.tsx            entrar / criar conta
 │   ├── (tabs)/              abas com tab bar custom + FAB central
 │   │   ├── index.tsx        01 Painel
 │   │   ├── transacoes.tsx   08 Transações
@@ -38,33 +41,40 @@ src/
 │                            DonutChart, MiniBarChart, Toggle, BalanceCard, …
 ├── data/
 │   ├── types.ts             User, Transaction, Goal, Category, RecurringRule
-│   ├── mock.ts              dataset do design (renderVals) — fonte da verdade
-│   ├── store.tsx            FinanceProvider + useFinance() — estado em memória
+│   ├── api.ts               cliente HTTP (fetch + EXPO_PUBLIC_API_URL)
+│   ├── auth.tsx             AuthProvider + useAuth() — login/registro/token
+│   ├── onboarding.tsx       OnboardingProvider — flag "já viu" (AsyncStorage)
+│   ├── tokenStore.ts        token persistido via AsyncStorage
+│   ├── mock.ts              só constantes de formulário / rótulos
+│   ├── store.tsx            FinanceProvider + useFinance() — dados vindos da API
 │   └── goals.ts             helpers de progresso/rótulos de meta
 ├── theme.ts                 tokens de design
 ├── icons.tsx                ícones SVG (react-native-svg)
 └── format.ts                moeda BR / datas (sem Intl, estável no Hermes)
 ```
 
-## O que está ligado (protótipo navegável)
+## O que está ligado
 
+- Primeira abertura: onboarding (4 passos, com _Pular_) → login / criar conta.
 - Abas + FAB abrindo _Nova despesa_ / _Nova receita_.
-- Salvar uma despesa/receita entra no store → Painel e Transações refletem na hora.
+- Salvar uma despesa/receita chama a API → Painel e Transações refletem após recarregar os dados.
 - Painel: esconder/mostrar saldo, alternar gráfico **Donut / Barras**.
 - Transações: filtros _Tudo / Despesas / Receitas / Recorrentes_ e etiqueta RECORRENTE.
 - Categorias: alternar Despesas/Receitas, excluir e criar categoria.
 - Metas: criar meta, abrir detalhe, **registrar aporte** (a barra/anel atualiza).
-- Perfil: toggles de notificação e de recorrentes com estado.
+- Perfil: toggles de notificação e de recorrentes; **sair da conta**.
 
-Tudo em memória — recarregar volta ao dataset do mock.
+Os dados são persistidos no backend; o mock guarda só valores padrão de formulário.
 
 ## Verificação
 
 ```bash
 npx tsc --noEmit                  # tipos limpos
-npx expo-doctor                   # 21/21 checks
-npx expo export --platform web    # o bundle Metro compila (16 rotas)
+npx expo lint                     # lint
+npx expo export --platform web    # o bundle Metro compila
 ```
+
+> Precisa da API rodando (`painel-admin/` → `npm run dev`) para login e dados.
 
 > Execução nativa (iOS/Android real) não foi testada neste ambiente — precisa de
 > emulador/dispositivo com `npx expo start`. As checagens acima cobrem tipos,

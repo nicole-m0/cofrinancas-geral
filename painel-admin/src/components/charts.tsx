@@ -55,7 +55,14 @@ export function DonutChart({
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#EDEBE6" strokeWidth={strokeWidth} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="var(--color-track)"
+          strokeWidth={strokeWidth}
+        />
         {arcs.map((arc, i) => (
           <circle
             key={i}

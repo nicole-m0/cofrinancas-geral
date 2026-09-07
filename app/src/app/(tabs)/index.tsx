@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -13,13 +14,16 @@ import {
 import { DonutChart } from '@/components/DonutChart';
 import { Icon } from '@/icons';
 import { useFinance } from '@/data/store';
-import { profile, upcoming } from '@/data/mock';
+import { useTheme, type ThemeColors } from '@/data/theme';
 import { brl, brlShort } from '@/format';
-import { colors } from '@/theme';
 
 export default function PainelScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const {
+    profile,
+    upcoming,
     balance,
     categorySpend,
     chartStyle,
@@ -180,7 +184,8 @@ export default function PainelScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
   month: { fontSize: 13 },
   greeting: { fontSize: 20, letterSpacing: -0.4 },

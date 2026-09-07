@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 
-import { Sidebar } from "@/components/Sidebar";
+import { Providers } from "./providers";
+import { THEME_STORAGE_KEY } from "@/lib/theme";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -12,19 +13,24 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "Cofrinanças · Painel admin",
-  description: "Painel administrativo do app de finanças pessoais — protótipo com dados em mock.",
+  description: "Painel administrativo do app de finanças pessoais.",
 };
+
+// Aplica o tema salvo antes da primeira pintura (sem flash).
+const themeScript = `(function(){try{
+var t=localStorage.getItem('${THEME_STORAGE_KEY}')||'system';
+var dark=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+}catch(e){}})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${manrope.variable} h-full`}>
+    <html lang="pt-BR" className={`${manrope.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-full bg-canvas text-ink antialiased">
-        <div className="flex min-h-dvh">
-          <Sidebar />
-          <main className="min-w-0 flex-1 bg-screen px-6 py-8 lg:px-10">
-            <div className="mx-auto max-w-6xl">{children}</div>
-          </main>
-        </div>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
