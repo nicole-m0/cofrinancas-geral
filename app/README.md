@@ -2,8 +2,10 @@
 
 Aplicativo mobile em **React Native + Expo** (Expo Router, TypeScript).
 Consome a API servida pelo `painel-admin/` (Next.js Route Handlers); a URL fica
-em `EXPO_PUBLIC_API_URL` (`.env`). Autenticação por token (Bearer) guardado no
-dispositivo. `src/data/mock.ts` só guarda constantes de formulário.
+em `EXPO_PUBLIC_API_URL` — `.env.development` (`http://localhost:3000`) em dev e
+`.env.production` (API na Vercel) nos builds. Veja `.env.example` para overrides
+locais. Autenticação por token (Bearer) guardado no dispositivo.
+`src/data/mock.ts` só guarda constantes de formulário.
 
 O visual foi importado do Claude Design — projeto _"Finanças Pessoais - App"_,
 10 artboards iOS/Android de 390 px. As cores, tipografia (Manrope), raios e o
