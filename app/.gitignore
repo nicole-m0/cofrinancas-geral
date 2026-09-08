@@ -43,3 +43,8 @@ example
 # generated native folders
 /ios
 /android
+
+
+url: https://painel-admin-vert.vercel.app/login
+email: nicole@cofrinancas.dev
+senha: Admin@2026
